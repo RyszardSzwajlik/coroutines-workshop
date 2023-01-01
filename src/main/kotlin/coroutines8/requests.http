@@ -1,0 +1,23 @@
+# Get all customers
+GET http://localhost:8080/customers
+
+###
+
+# Get customer by id
+GET http://localhost:8080/customers/1
+
+###
+
+# Create customer
+POST http://localhost:8080/customers
+Content-Type: application/json
+
+{
+    "firstName": "Ryszard",
+    "lastName": "Szwajlik"
+}
+
+###
+
+# Get one and all customers in one request
+GET http://localhost:8080/customers/one-and-all/1

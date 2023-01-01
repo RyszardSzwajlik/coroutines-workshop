@@ -1,0 +1,16 @@
+package coroutines1
+
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+
+    launch {
+        delay(1000)
+        println("world ${Thread.currentThread().name}")
+    }
+    println("hello ${Thread.currentThread().name}")
+
+}
+
