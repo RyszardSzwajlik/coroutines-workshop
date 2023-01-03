@@ -1,15 +1,15 @@
 package coroutines3
 
 fun main() {
-    val sequence = buildList { // sequence
+    val sequence = sequence {
         println("one")
-        add('a') // yield
+        yield('a')
 
         println("two")
-        add('b')
+        yield('b')
 
         println("three")
-        add('c')
+        yield('c')
     }
 
     for (value in sequence) {

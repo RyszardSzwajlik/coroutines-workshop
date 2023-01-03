@@ -2,10 +2,13 @@ package coroutines8.controller
 
 import coroutines8.model.Customer
 import coroutines8.repository.CustomerRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import java.time.Duration
 
 
 @RestController
@@ -15,21 +18,23 @@ class CustomerController(
 ) {
 
     @GetMapping("/{customerId}")
-    fun getCustomer(@PathVariable customerId: Long): Mono<Customer> {
-        return customerRepository.findById(customerId)
-            .delayElement(Duration.ofMillis(500))
+    suspend fun getCustomer(@PathVariable customerId: Long): Customer {
+        delay(500)
+        return customerRepository.findById(customerId).awaitSingle()
     }
 
     @GetMapping
-    fun getCustomers(): Flux<Customer> {
-        return customerRepository.findAll()
-            .delaySequence(Duration.ofMillis(500))
+    suspend fun getCustomers(): Flow<Customer> {
+        delay(500)
+        return customerRepository.findAll().asFlow()
     }
 
     @PostMapping
-    fun createCustomer(@RequestBody customer: Customer): Mono<Customer> {
-        return customerRepository.save(customer)
-            .delayElement(Duration.ofMillis(500))
+    suspend fun createCustomer(@RequestBody customer: Customer): Customer {
+        delay(500)
+        return runBlocking {
+            async { customerRepository.save(customer).block() }
+        }.await()!!
     }
 
 }

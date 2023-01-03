@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
+import org.springframework.web.reactive.function.client.awaitBody
 
 
 @RestController
@@ -18,19 +17,16 @@ class CustomerOneAndAllController(
 ) {
 
     @GetMapping("/{customerId}")
-    fun getOneAndAll(@PathVariable customerId: Long): Mono<OneAndAll> {
+    suspend fun getOneAndAll(@PathVariable customerId: Long): OneAndAll {
         val one = webClient.get().uri("/customers/$customerId")
             .retrieve()
-            .bodyToMono<Customer>()
+            .awaitBody<Customer>()
 
         val all = webClient.get().uri("/customers")
             .retrieve()
-            .bodyToMono<List<Customer>>()
+            .awaitBody<List<Customer>>()
 
-        return Mono.zip(one, all)
-            .map {
-                OneAndAll(it.t1, it.t2)
-            }
+        return OneAndAll(one, all)
     }
 
 }

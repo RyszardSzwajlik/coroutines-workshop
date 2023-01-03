@@ -1,4 +1,8 @@
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
 
 fun main() {
     suspend fun task(taskId: Int) {
@@ -8,5 +12,13 @@ fun main() {
     }
 
     // code goes here
+//    val context = Dispatchers.Unconfined
+//    val context = newSingleThreadContext("MyOwnThread")
+    val context = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
+    runBlocking {
+        repeat(10) {
+            launch(context) { task(it) }
+        }
+    }
     println("asd")
 }
